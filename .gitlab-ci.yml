@@ -1,0 +1,27 @@
+# ygp-spm · MR 门禁（MRO采购协议 compile + 静态扫描；单测在 IDEA）
+
+stages:
+  - verify
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+purchase-agreement-qa-gate:
+  stage: verify
+  image: maven:3.9-eclipse-temurin-8
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - spm-service/src/main/java/com/ygp/spm/purchaseagreement/**/*
+        - spm-service/src/test/java/com/ygp/spm/purchaseagreement/**/*
+        - spm-api/src/main/java/com/ygp/spm/purchaseagreement/**/*
+        - script/2026/20260811_mro_purchase_agreement/**/*
+    - if: $CI_COMMIT_BRANCH =~ /purchase_agreement|SPM-9505/
+  script:
+    - chmod +x script/2026/20260811_mro_purchase_agreement/qa/dev-ready-for-qa.sh
+    - ./script/2026/20260811_mro_purchase_agreement/qa/dev-ready-for-qa.sh
+  artifacts:
+    when: always
+    paths:
+      - script/2026/20260811_mro_purchase_agreement/reports/dev-ready_latest.md
+    expire_in: 7 days

@@ -1,0 +1,13 @@
+target/
+*.iml
+.idea/
+logs/
+/data/
+*/data
+.trae/
+.vscode/
+.cursor/
+spm-service/src/test/java/com/ygp/rd/readme
+test/java/com/ygp/rd/readme
+.gitnexus
+.gitlab-ci.yml

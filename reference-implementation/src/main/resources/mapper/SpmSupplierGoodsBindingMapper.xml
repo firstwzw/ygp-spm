@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ygp.spm.purchase.mapper.SpmSupplierGoodsBindingMapper">
+
+    <!-- 批量查询SKU的供应商绑定 -->
+    <select id="selectBatchBySkuCodes" resultType="com.ygp.spm.purchase.entity.SpmSupplierGoodsBinding">
+        SELECT 
+            id,
+            sku_code,
+            supplier_code,
+            purchase_price,
+            lead_time,
+            grade,
+            active,
+            creator,
+            creator_code,
+            create_time,
+            updater,
+            updater_code,
+            update_time
+        FROM spm_supplier_goods_binding
+        WHERE active = 1
+          AND sku_code IN
+          <foreach collection="skuCodes" item="sku" open="(" separator="," close=")">
+              #{sku}
+          </foreach>
+        ORDER BY sku_code, grade DESC, purchase_price ASC
+    </select>
+
+    <!-- 批量查询(SKU, 供应商)对的绑定价格 -->
+    <select id="selectBatchByPairs" resultType="com.ygp.spm.purchase.entity.SpmSupplierGoodsBinding">
+        SELECT 
+            id,
+            sku_code,
+            supplier_code,
+            purchase_price,
+            lead_time,
+            grade,
+            active
+        FROM spm_supplier_goods_binding
+        WHERE active = 1
+          AND (sku_code, supplier_code) IN
+          <foreach collection="pairs" item="pair" open="(" separator="," close=")">
+              (#{pair.skuCode}, #{pair.supplierCode})
+          </foreach>
+    </select>
+
+</mapper>
